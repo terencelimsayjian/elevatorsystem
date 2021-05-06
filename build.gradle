@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+    id 'application'
+    id "com.github.johnrengelman.shadow" version "6.1.0"
+}
+
+sourceCompatibility = 11
+targetCompatibility = 11
+group 'com.terence.elevator'
+
+application {
+    mainClassName = 'com.terence.elevator.ElevatorSystemApplication'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testImplementation "org.mockito:mockito-core:3.9.0"
+}
+
+test {
+    useJUnitPlatform()
+}
