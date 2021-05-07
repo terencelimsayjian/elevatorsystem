@@ -1,9 +1,7 @@
 package com.terence.elevator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -28,14 +26,19 @@ public class Lift {
 
     buttonPanel = new ArrayList<>();
     for (int i = 0; i < 5; i++) {
-      buttonPanel.add(i, Boolean.TRUE);
+      buttonPanel.add(i, Boolean.FALSE);
     }
   }
 
-  // Button panel
-
   public void pressButton(int level) {
+    System.out.println("Setting level: " + level);
+    System.out.println(buttonPanel);
+
     buttonPanel.set(level - 1, Boolean.TRUE);
+
+    if (this.status == IDLE) {
+      executor.submit(() -> moveAsync(level));
+    }
   }
 
   public void move(int level) {
@@ -47,8 +50,6 @@ public class Lift {
   }
 
   int getNextLevelToDispatch(List<Boolean> levelsPressed, int currentFloor) {
-    // Account for case where none pressed
-
     int lowestFloor = -1;
     for (int i = 0; i < currentFloor - 1; i++) {
       if (Boolean.TRUE.equals(levelsPressed.get(i))) {
@@ -79,25 +80,23 @@ public class Lift {
   }
 
   private void dispatchComplete() {
-    // Find extremes of level that is closest to me
-    // If no button is pressed, don't dispatch
+    int nextLevelToDispatch = getNextLevelToDispatch(this.buttonPanel, this.currentFloor);
 
-    // If floors pressed only exist on one side of the current level, dispatch to the furthest level on that side
+    System.out.println("Dispatching to next level: " + nextLevelToDispatch);
 
-    // If floors are pressed on BOTH sides of the current level
-    // Find lowest floor button that is pressed
-    // Find highest floor button that is pressed
-
-    // Can represent button panel as a list
-
-    int newLevel = 1;
-    executor.submit(() -> moveAsync(newLevel));
+    if (nextLevelToDispatch > 0) {
+      executor.submit(() -> moveAsync(nextLevelToDispatch));
+    } else {
+      this.status = IDLE;
+    }
   }
 
   private void moveAsync(int level) {
     if (level == currentFloor) {
       return;
     }
+
+    this.status = MOVING;
 
     try {
       this.targetFloor = level;

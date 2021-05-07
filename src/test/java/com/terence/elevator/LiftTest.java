@@ -9,19 +9,25 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class LiftTest {
 
-//  @Test
-//  void testMove() throws Exception {
-//    Lift lift = new Lift();
-//
-//    lift.move(5);
-//    lift.pressButton(3);
-//    lift.pressButton(4);
-//
-//    lift.pressButton(1);
-//
-//    Thread.sleep(20000);
-//    assertTrue(true);
-//  }
+  @Test
+  void testMove() throws Exception {
+    Lift lift = new Lift();
+
+    lift.move(5);
+    lift.pressButton(3);
+    lift.pressButton(4);
+
+    lift.pressButton(1);
+
+    Thread.sleep(10000);
+    lift.pressButton(4);
+
+    Thread.sleep(10000);
+    lift.pressButton(1);
+
+    Thread.sleep(10000);
+    assertTrue(true);
+  }
 
   @Test
   void testShouldGoDownToFarthestLevel() {
