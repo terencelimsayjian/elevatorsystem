@@ -8,11 +8,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Lift {
-  private final int IDLE = 0;
-  private final int MOVING = 1;
   private final LiftDispatchStrategy liftDispatchStrategy;
 
-  private int status;
+  private LiftStatus status;
   private int targetFloor;
   private int currentFloor;
   private Direction direction;
@@ -22,7 +20,7 @@ public class Lift {
 
   public Lift(LiftDispatchStrategy liftDispatchStrategy) {
     this.liftDispatchStrategy = liftDispatchStrategy;
-    status = IDLE;
+    status = LiftStatus.IDLE;
     targetFloor = 1;
     currentFloor = 1;
     direction = Direction.UP;
@@ -39,9 +37,13 @@ public class Lift {
 
     buttonPanel.set(level - 1, Boolean.TRUE);
 
-    if (this.status == IDLE) {
+    if (this.status == LiftStatus.IDLE) {
       dispatchLift(level);
     }
+  }
+
+  public LiftStatus getStatus() {
+    return status;
   }
 
   private void dispatchComplete() {
@@ -51,11 +53,11 @@ public class Lift {
       System.out.println("Dispatching to next level: " + nextLevelToDispatch);
       dispatchLift(nextLevelToDispatch);
     } catch (com.terence.elevator.liftdispatchstrategy.NoDispatchException e) {
-      this.status = IDLE;
+      this.status = LiftStatus.IDLE;
     }
   }
 
-  private void dispatchLift(int nextLevelToDispatch) {
+  void dispatchLift(int nextLevelToDispatch) {
     executor.submit(() -> moveAsync(nextLevelToDispatch));
   }
 
@@ -64,7 +66,7 @@ public class Lift {
       return;
     }
 
-    this.status = MOVING;
+    this.status = LiftStatus.MOVING;
 
     try {
       this.targetFloor = level;
