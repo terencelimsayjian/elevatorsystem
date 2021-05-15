@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ClosestExtremityStrategyTest {
 
@@ -18,7 +19,7 @@ class ClosestExtremityStrategyTest {
   }
 
   @Test
-  void testShouldGoDownToFarthestLevel() {
+  void testShouldGoDownToFarthestLevel() throws Exception {
     List<Boolean> buttons = new ArrayList<>();
     buttons.add(0, true);
     buttons.add(1, false);
@@ -29,13 +30,14 @@ class ClosestExtremityStrategyTest {
 
     int currentLevel = 3;
 
-    int nextLevelToDispatch = strategy.getNextLevelToDispatch(buttons, currentLevel);
+    int nextLevelToDispatch = 0;
+    nextLevelToDispatch = strategy.getNextLevelToDispatch(buttons, currentLevel);
 
     assertEquals(1, nextLevelToDispatch);
   }
 
   @Test
-  void testShouldGoDownToFarthestLevelDespiteHavingCloserLevel() {
+  void testShouldGoDownToFarthestLevelDespiteHavingCloserLevel() throws Exception {
     List<Boolean> buttons = new ArrayList<>();
     buttons.add(0, false);
     buttons.add(1, true);
@@ -46,13 +48,14 @@ class ClosestExtremityStrategyTest {
 
     int currentLevel = 3;
 
-    int nextLevelToDispatch = strategy.getNextLevelToDispatch(buttons, currentLevel);
+    int nextLevelToDispatch = 0;
+    nextLevelToDispatch = strategy.getNextLevelToDispatch(buttons, currentLevel);
 
     assertEquals(2, nextLevelToDispatch);
   }
 
   @Test
-  void testShouldGoUpToFarthestLevel() {
+  void testShouldGoUpToFarthestLevel() throws Exception {
     List<Boolean> buttons = new ArrayList<>();
     buttons.add(0, false);
     buttons.add(1, false);
@@ -63,13 +66,14 @@ class ClosestExtremityStrategyTest {
 
     int currentLevel = 3;
 
-    int nextLevelToDispatch = strategy.getNextLevelToDispatch(buttons, currentLevel);
+    int nextLevelToDispatch = 0;
+    nextLevelToDispatch = strategy.getNextLevelToDispatch(buttons, currentLevel);
 
     assertEquals(6, nextLevelToDispatch);
   }
 
   @Test
-  void testShouldGoUpToFarthestLevelDespiteHavingCloserLevel() {
+  void testShouldGoUpToFarthestLevelDespiteHavingCloserLevel() throws Exception {
     List<Boolean> buttons = new ArrayList<>();
     buttons.add(0, false);
     buttons.add(1, false);
@@ -80,13 +84,14 @@ class ClosestExtremityStrategyTest {
 
     int currentLevel = 3;
 
-    int nextLevelToDispatch = strategy.getNextLevelToDispatch(buttons, currentLevel);
+    int nextLevelToDispatch = 0;
+    nextLevelToDispatch = strategy.getNextLevelToDispatch(buttons, currentLevel);
 
     assertEquals(5, nextLevelToDispatch);
   }
 
   @Test
-  void testShouldGoToCloserLevelBelowIfUpAndDownAreOptions() {
+  void testShouldGoToCloserLevelBelowIfUpAndDownAreOptions() throws Exception {
     List<Boolean> buttons = new ArrayList<>();
     buttons.add(0, false);
     buttons.add(1, true);
@@ -97,13 +102,14 @@ class ClosestExtremityStrategyTest {
 
     int currentLevel = 3;
 
-    int nextLevelToDispatch = strategy.getNextLevelToDispatch(buttons, currentLevel);
+    int nextLevelToDispatch = 0;
+    nextLevelToDispatch = strategy.getNextLevelToDispatch(buttons, currentLevel);
 
     assertEquals(2, nextLevelToDispatch);
   }
 
   @Test
-  void testShouldGoToCloserLevelAboveIfUpAndDownAreOptions() {
+  void testShouldGoToCloserLevelAboveIfUpAndDownAreOptions() throws Exception {
     List<Boolean> buttons = new ArrayList<>();
     buttons.add(0, false);
     buttons.add(1, true);
@@ -114,13 +120,14 @@ class ClosestExtremityStrategyTest {
 
     int currentLevel = 4;
 
-    int nextLevelToDispatch = strategy.getNextLevelToDispatch(buttons, currentLevel);
+    int nextLevelToDispatch = 0;
+    nextLevelToDispatch = strategy.getNextLevelToDispatch(buttons, currentLevel);
 
     assertEquals(5, nextLevelToDispatch);
   }
 
   @Test
-  void testReturnMinusOneIfNoButtonsPressed() {
+  void testThrowNoDispatchExceptionIfNoButtonsPressed() throws Exception {
     List<Boolean> buttons = new ArrayList<>();
     buttons.add(0, false);
     buttons.add(1, false);
@@ -129,8 +136,7 @@ class ClosestExtremityStrategyTest {
 
     int currentLevel = 2;
 
-    int nextLevelToDispatch = strategy.getNextLevelToDispatch(buttons, currentLevel);
-
-    assertEquals(-1, nextLevelToDispatch);
+    assertThrows(
+        NoDispatchException.class, () -> strategy.getNextLevelToDispatch(buttons, currentLevel));
   }
 }

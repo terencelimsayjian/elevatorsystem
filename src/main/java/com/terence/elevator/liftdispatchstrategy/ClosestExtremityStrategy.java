@@ -4,7 +4,8 @@ import java.util.List;
 
 public class ClosestExtremityStrategy implements LiftDispatchStrategy {
   @Override
-  public int getNextLevelToDispatch(List<Boolean> levelsPressed, int currentFloor) {
+  public int getNextLevelToDispatch(List<Boolean> levelsPressed, int currentFloor)
+      throws NoDispatchException {
     int lowestFloor = -1;
     for (int i = 0; i < currentFloor - 1; i++) {
       if (Boolean.TRUE.equals(levelsPressed.get(i))) {
@@ -21,7 +22,9 @@ public class ClosestExtremityStrategy implements LiftDispatchStrategy {
       }
     }
 
-    if (lowestFloor >= 0 && highestFloor >= 0) {
+    if (lowestFloor < 0 && highestFloor < 0) {
+      throw new NoDispatchException();
+    } else if (lowestFloor >= 0 && highestFloor >= 0) {
       return highestFloor - currentFloor > currentFloor - lowestFloor ? lowestFloor : highestFloor;
     } else if (lowestFloor < 0) {
       // only have higher floors
@@ -29,8 +32,8 @@ public class ClosestExtremityStrategy implements LiftDispatchStrategy {
     } else if (highestFloor < 0) {
       // only have lower floors
       return lowestFloor;
+    } else {
+      return 1;
     }
-
-    return -1;
   }
 }

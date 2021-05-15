@@ -45,13 +45,12 @@ public class Lift {
   }
 
   private void dispatchComplete() {
-    int nextLevelToDispatch = liftDispatchStrategy.getNextLevelToDispatch(this.buttonPanel, this.currentFloor);
-
-    System.out.println("Dispatching to next level: " + nextLevelToDispatch);
-
-    if (nextLevelToDispatch > 0) {
+    try {
+      int nextLevelToDispatch =
+          liftDispatchStrategy.getNextLevelToDispatch(this.buttonPanel, this.currentFloor);
+      System.out.println("Dispatching to next level: " + nextLevelToDispatch);
       dispatchLift(nextLevelToDispatch);
-    } else {
+    } catch (com.terence.elevator.liftdispatchstrategy.NoDispatchException e) {
       this.status = IDLE;
     }
   }
