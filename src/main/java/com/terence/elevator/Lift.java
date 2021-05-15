@@ -1,5 +1,7 @@
 package com.terence.elevator;
 
+import com.terence.elevator.liftdispatchstrategy.LiftDispatchStrategy;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -8,6 +10,7 @@ import java.util.concurrent.Executors;
 public class Lift {
   private final int IDLE = 0;
   private final int MOVING = 1;
+  private final LiftDispatchStrategy liftDispatchStrategy;
 
   private int status;
   private int targetFloor;
@@ -17,7 +20,8 @@ public class Lift {
 
   private List<Boolean> buttonPanel;
 
-  public Lift() {
+  public Lift(LiftDispatchStrategy liftDispatchStrategy) {
+    this.liftDispatchStrategy = liftDispatchStrategy;
     status = IDLE;
     targetFloor = 1;
     currentFloor = 1;
@@ -40,38 +44,8 @@ public class Lift {
     }
   }
 
-  int getNextLevelToDispatch(List<Boolean> levelsPressed, int currentFloor) {
-    int lowestFloor = -1;
-    for (int i = 0; i < currentFloor - 1; i++) {
-      if (Boolean.TRUE.equals(levelsPressed.get(i))) {
-        lowestFloor = i + 1;
-        break;
-      }
-    }
-
-    int highestFloor = -1;
-    for (int i = levelsPressed.size() - 1; i > currentFloor - 1; i--) {
-      if (Boolean.TRUE.equals(levelsPressed.get(i))) {
-        highestFloor = i + 1;
-        break;
-      }
-    }
-
-    if (lowestFloor >= 0 && highestFloor >= 0) {
-      return highestFloor - currentFloor > currentFloor - lowestFloor ? lowestFloor : highestFloor;
-    } else if (lowestFloor < 0) {
-      // only have higher floors
-      return highestFloor;
-    } else if (highestFloor < 0) {
-      // only have lower floors
-      return lowestFloor;
-    }
-
-    return -1;
-  }
-
   private void dispatchComplete() {
-    int nextLevelToDispatch = getNextLevelToDispatch(this.buttonPanel, this.currentFloor);
+    int nextLevelToDispatch = liftDispatchStrategy.getNextLevelToDispatch(this.buttonPanel, this.currentFloor);
 
     System.out.println("Dispatching to next level: " + nextLevelToDispatch);
 
