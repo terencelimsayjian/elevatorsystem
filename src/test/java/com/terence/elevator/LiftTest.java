@@ -13,7 +13,7 @@ class LiftTest {
   void testMove() throws Exception {
     Lift lift = new Lift();
 
-    lift.move(5);
+    lift.pressButton(5);
     lift.pressButton(3);
     lift.pressButton(4);
 

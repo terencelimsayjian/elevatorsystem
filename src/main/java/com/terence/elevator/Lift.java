@@ -13,7 +13,6 @@ public class Lift {
   private int targetFloor;
   private int currentFloor;
   private Direction direction;
-  private boolean doorsOpen;
   private ExecutorService executor = Executors.newSingleThreadExecutor();
 
   private List<Boolean> buttonPanel;
@@ -37,16 +36,8 @@ public class Lift {
     buttonPanel.set(level - 1, Boolean.TRUE);
 
     if (this.status == IDLE) {
-      executor.submit(() -> moveAsync(level));
+      dispatchLift(level);
     }
-  }
-
-  public void move(int level) {
-    if (this.status == MOVING) {
-      return;
-    }
-
-    executor.submit(() -> moveAsync(level));
   }
 
   int getNextLevelToDispatch(List<Boolean> levelsPressed, int currentFloor) {
@@ -85,10 +76,14 @@ public class Lift {
     System.out.println("Dispatching to next level: " + nextLevelToDispatch);
 
     if (nextLevelToDispatch > 0) {
-      executor.submit(() -> moveAsync(nextLevelToDispatch));
+      dispatchLift(nextLevelToDispatch);
     } else {
       this.status = IDLE;
     }
+  }
+
+  private void dispatchLift(int nextLevelToDispatch) {
+    executor.submit(() -> moveAsync(nextLevelToDispatch));
   }
 
   private void moveAsync(int level) {
@@ -119,13 +114,10 @@ public class Lift {
 
   private void stopAtLevelIfNecessary() throws InterruptedException {
     if (Boolean.TRUE.equals(buttonPanel.get(this.currentFloor - 1))) {
-      this.doorsOpen = true;
       this.buttonPanel.set(this.currentFloor - 1, false);
 
       Thread.sleep(1000);
       System.out.println("Doors opening at: " + this.currentFloor);
-
-      this.doorsOpen = false;
     }
   }
 }
